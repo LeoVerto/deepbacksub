@@ -93,7 +93,7 @@ bool process_frame(cv::Mat *cap, void *ctx) {
 
 	// write frame to v4l2loopback
 	cv::Mat yuv;
-	cv::cvtColor(out,yuv,CV_BGR2YUV_I420);
+	cv::cvtColor(out,yuv,cv::COLOR_BGR2YUV_I420);
 	int framesize = yuv.step[0]*yuv.rows;
 	while (framesize > 0) {
 		int ret = write(pfr->lbfd,yuv.data,framesize);
@@ -272,7 +272,7 @@ int main(int argc, char* argv[]) {
 			cv::Mat roi = cap(roidim);
 			// convert BGR to RGB, resize ROI to input size
 			cv::Mat in_u8_rgb, in_resized;
-			cv::cvtColor(roi,in_u8_rgb,CV_BGR2RGB);
+			cv::cvtColor(roi,in_u8_rgb,cv::COLOR_BGR2RGB);
 			// TODO: can convert directly to float?
 			cv::resize(in_u8_rgb,in_resized,cv::Size(input.cols,input.rows));
 
@@ -309,10 +309,10 @@ int main(int argc, char* argv[]) {
 			// denoise, close & open with small then large elements, adapted from:
 			// https://stackoverflow.com/questions/42065405/remove-noise-from-threshold-image-opencv-python
 			if (getenv("DEEPSEG_NODENOISE")==NULL) {
-				cv::morphologyEx(ofinal,ofinal,CV_MOP_CLOSE,element3);
-				cv::morphologyEx(ofinal,ofinal,CV_MOP_OPEN,element3);
-				cv::morphologyEx(ofinal,ofinal,CV_MOP_CLOSE,element7);
-				cv::morphologyEx(ofinal,ofinal,CV_MOP_OPEN,element7);
+				cv::morphologyEx(ofinal,ofinal,cv::MORPH_CLOSE,element3);
+				cv::morphologyEx(ofinal,ofinal,cv::MORPH_OPEN,element3);
+				cv::morphologyEx(ofinal,ofinal,cv::MORPH_CLOSE,element7);
+				cv::morphologyEx(ofinal,ofinal,cv::MORPH_OPEN,element7);
 				cv::dilate(ofinal,ofinal,element7);
 			}
 			// smooth mask edges
